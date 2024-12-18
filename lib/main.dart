@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:music_level/screens/auth/login_screen.dart';
-import 'package:music_level/screens/auth/signup_screen.dart';
 import 'package:music_level/screens/main_screen.dart';
 
 void main() {
@@ -23,8 +22,7 @@ class MyApp extends StatelessWidget {
       initialRoute: '/', // Set initial route to Login page
       routes: {
         '/' : (context) => const MainScreen(),
-        '/login': (context) => const LoginPage(),
-        '/signup': (context) => const SignUpPage(),
+        '/auth': (context) => const LoginPage(),
       },
     );
   }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:music_level/components/auth_comp.dart';
 import 'package:music_level/components/google_button.dart'; // Import GoogleButton
+import 'package:music_level/services/appwrite_service.dart'; // Import AppwriteService
 
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
@@ -25,35 +25,41 @@ class LoginPage extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 40),
-              // Using EmailPasswordWidget with isSignUp: false for Login
-              const EmailPasswordWidget(isSignUp: false),
-              const SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text(
-                    'Don\'t have an account?',
-                    style: TextStyle(color: Colors.white), // White text
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      // Navigate to the Sign Up page
-                      Navigator.pushNamed(context, '/signup');
-                    },
-                    child: const Text(
-                      'Sign Up',
-                      style: TextStyle(
-                        color: Colors.amber, // Button color
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 20),
+              // GoogleButton with sign-in logic
               GoogleButton(
-                onPressed: () {
-                  // Handle Google sign-in logic here
+                onPressed: () async {
+                  try {
+                    // Show loading indicator or update UI before sign-in attempt
+                    showDialog(
+                      context: context,
+                      builder: (context) => const Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                    );
+
+                    // Call Appwrite service to sign in with Google
+                    final user = await AppwriteService().signInWithGoogle();
+
+                    // Dismiss the loading indicator
+                    Navigator.of(context).pop();
+
+                    if (user != null) {
+                      // If sign-in is successful, navigate to the next page
+                      // For example: navigate to the home page
+                      Navigator.pushReplacementNamed(context, '/home');
+                    } else {
+                      // Handle error or show failure message
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Google sign-in failed')),
+                      );
+                    }
+                  } catch (e) {
+                    // Handle any error during Google sign-in
+                    Navigator.of(context).pop(); // Dismiss the loading
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Error: $e')),
+                    );
+                  }
                 },
               ),
             ],
