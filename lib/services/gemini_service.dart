@@ -1,12 +1,13 @@
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
 
 Future<String> generateLyrics(String prompt) async {
-  const apiKey = 'YOUR_API_KEY'; // Replace with your actual API key
+  var apiKey = dotenv.env['API_KEY']; // Replace with your actual API key
 
   // Initialize the Gemini model
   final model = GenerativeModel(
     model: 'gemini-1.5-flash',
-    apiKey: apiKey,
+    apiKey: apiKey!,
   );
 
   try {

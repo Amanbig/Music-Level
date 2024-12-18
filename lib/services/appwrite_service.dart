@@ -1,6 +1,7 @@
 import 'package:appwrite/appwrite.dart';
 import 'package:appwrite/enums.dart';
 import 'package:appwrite/models.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class AppwriteService {
@@ -11,18 +12,19 @@ class AppwriteService {
   final GoogleSignIn googleSignIn;
 
   // Replace these with your actual values
-  final String appwriteUrl = 'https://[YOUR_APPWRITE_URL]'; // Appwrite server URL
-  final String projectId = '[YOUR_PROJECT_ID]'; // Appwrite Project ID
-  final String databaseId = '[YOUR_DATABASE_ID]'; // Replace with your database ID
-  final String collectionId = '[YOUR_COLLECTION_ID]'; // Collection ID for storing music data
-  final String bucketId = '[YOUR_BUCKET_ID]'; // Bucket ID for storing audio files
+  final String appwriteUrl = dotenv.env['APPWRITE_URL']!; // Appwrite server URL
+  final String projectId = dotenv.env['PROJECT_ID']!; // Appwrite Project ID
+  final String databaseId = dotenv.env['DATABASE_ID']!; // Replace with your database ID
+  final String collectionId = dotenv.env['COLLECTION_ID']!; // Collection ID for storing music data
+  final String bucketId = dotenv.env['BUCKET_ID']!; // Bucket ID for storing audio files
 
+  // Initialize Appwrite client and Google Sign-In with email scope
   AppwriteService()
-      : client = Client(),
-        account = Account(Client()),
-        database = Databases(Client()),
-        storage = Storage(Client()),
-        googleSignIn = GoogleSignIn();
+      : client = Client().setEndpoint('https://cloud.appwrite.io/v1').setProject('6763024d0038091d468c'),
+        account = Account(Client().setEndpoint('https://cloud.appwrite.io/v1').setProject('6763024d0038091d468c')),
+        database = Databases(Client().setEndpoint('https://cloud.appwrite.io/v1').setProject('6763024d0038091d468c')),
+        storage = Storage(Client().setEndpoint('https://cloud.appwrite.io/v1').setProject('6763024d0038091d468c')),
+        googleSignIn = GoogleSignIn(scopes: ['email']); // Adding email scope for Google Sign-In
 
   // Initialize the Appwrite client
   Future<void> init() async {
@@ -39,7 +41,7 @@ class AppwriteService {
       }
       final googleAuth = await googleUser.authentication;
 
-      // Now we use createOAuth2Session correctly
+      // Use createOAuth2Session with correct URLs for success and failure
       final result = await account.createOAuth2Session(
         provider: OAuthProvider.google, // Correct OAuth provider enum
         success: 'YOUR_SUCCESS_URL', // Replace with your success URL
@@ -86,7 +88,8 @@ class AppwriteService {
     try {
       final upload = await storage.createFile(
         bucketId: bucketId,
-        file: InputFile.fromPath(path: filePath), fileId: '',
+        file: InputFile.fromPath(path: filePath), // Upload file from path
+        fileId: '', // Auto-generate file ID
       );
       return upload.$id; // Returns the file ID for the uploaded file
     } catch (e) {

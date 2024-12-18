@@ -5,7 +5,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class MusicGenerationService {
   final String apiUrl = "https://api-inference.huggingface.co/models/facebook/musicgen-small";
-  final String? apiToken = dotenv.env['API_KEY']; // Replace with your Hugging Face API token
+  final String? apiToken = dotenv.env['HF_TOKEN']; // Replace with your Hugging Face API token
 
   // Function to generate music based on lyrics
   Future<String> generateMusicFromLyrics(String lyrics, String outputFilePath) async {
