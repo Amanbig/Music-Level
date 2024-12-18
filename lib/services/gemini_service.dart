@@ -1,21 +1,33 @@
-import 'package:gemini_flutter/gemini_flutter.dart';
+import 'package:google_generative_ai/google_generative_ai.dart';
 
 Future<String> generateLyrics(String prompt) async {
-  final geminiService = GeminiService(apiKey: 'YOUR_GEMINI_API_KEY');
+  const apiKey = 'YOUR_API_KEY'; // Replace with your actual API key
+
+  // Initialize the Gemini model
+  final model = GenerativeModel(
+    model: 'gemini-1.5-flash',
+    apiKey: apiKey,
+  );
+
   try {
-    final response = await geminiService.generate(
-      model: 'gemini-1.5-flash',
-      prompt: prompt,
-    );
-    return response.text; // Extract the generated lyrics
+    // Use the model to generate content
+    final response = await model.generateContent([
+      Content.text(prompt),
+    ]);
+
+    // Return the generated text
+    return response.text ?? 'No lyrics generated.';
   } catch (e) {
     print('Error generating lyrics: $e');
-    return '';
+    return 'Error: $e';
   }
 }
 
 void main() async {
+  // Example prompt for lyric generation
   String prompt = "Write a pop song about hope and resilience.";
   String lyrics = await generateLyrics(prompt);
-  print("Generated Lyrics: \n$lyrics");
+
+  // Print the generated lyrics
+  print("Generated Lyrics:\n$lyrics");
 }

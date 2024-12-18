@@ -29,7 +29,7 @@ class _MusicPreviewPageState extends State<MusicPreviewPage> {
   void initState() {
     super.initState();
     // Listen to position changes to update current time
-    _audioPlayer.onAudioPositionChanged.listen((Duration p) {
+    _audioPlayer.onPositionChanged.listen((Duration p) {
       setState(() {
         currentTime = p.inSeconds.toDouble();
       });
@@ -52,12 +52,14 @@ class _MusicPreviewPageState extends State<MusicPreviewPage> {
     if (isPlaying) {
       await _audioPlayer.pause();
     } else {
-      await _audioPlayer.play(widget.audioUrl);
+      // Play the audio from the URL
+      await _audioPlayer.play(Uri.parse(widget.audioUrl) as Source);
     }
     setState(() {
       isPlaying = !isPlaying;
     });
   }
+
 
   void _skipForward() {
     final newPosition = currentTime + 15; // Skip forward 15 seconds
