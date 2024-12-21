@@ -1,7 +1,7 @@
 # music_level
 
 A music generation app
-
+```bash
 MusicLevelApp/
 │
 ├── lib/
@@ -75,4 +75,4 @@ MusicLevelApp/
 │
 ├── pubspec.yaml                      # Flutter dependencies and package setup
 └── README.md                         # Project documentation
-
+```
